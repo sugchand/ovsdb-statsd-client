@@ -39,7 +39,7 @@ type StatsDConfig struct {
 	Port uint16 `yaml:"Port"`
 	FlushInterval uint16 `yaml:"FlushInterval"`
 	Prefix string `yaml:2Prefix"`
-	SampleRate uint16 `yaml:"SampleRate"`
+	SampleRate float32 `yaml:"SampleRate"`
 }
 
 type DBColumns struct {

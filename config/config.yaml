@@ -20,7 +20,7 @@
     # 3 : Timer
     Columns : [
       {Name : "statistics", Type : 3,},
-      {Name : "_uuid", Type : 0,},
+      {Name : "name", Type : 0,},
     ],
   },
 

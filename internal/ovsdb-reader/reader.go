@@ -44,6 +44,7 @@ type ReportRow struct {
 type ReportCol struct {
 	ColName string
 	Data interface{}
+	ReportType config.ReportValueType
 }
 
 func (reader *OVSDBReader)ConnectDB() error {
@@ -92,6 +93,7 @@ func (reader *OVSDBReader)ReadOVSDB()*DBReport {
 				reportCol := &ReportCol {
 					ColName : col.ColName,
 					Data : colVal,
+					ReportType : col.reportType,
 				}
 				reportRow.DataSet = append(reportRow.DataSet, reportCol)
 			}
