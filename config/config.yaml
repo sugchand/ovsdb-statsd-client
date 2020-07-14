@@ -1,0 +1,41 @@
+# ovsdb-statsd startup configuration options. These options are cannot be
+# modified at run time.
+{
+  OvsDBConfig: {
+    # Type of network connection, can be "unix", "tcp" or "udp"
+    Network : "unix",
+    # Address in the format of host:port.
+    # In case of unix socket, provide the sock file
+    Address : "/usr/local/var/run/openvswitch/db.sock",
+    # DB name to read the data from
+    DB : "Open_vSwitch",
+    # OVSDB table to read the data from.
+    Table : "Interface",
+    # Columns in the DB that are interested in
+    # Name : Name of the row
+    # Type : Type of row
+    # 0 : undefined
+    # 1 : Counter
+    # 2 : Gauge
+    # 3 : Timer
+    # XXX : Timer is only supported for now.
+    Columns : [
+      {Name : "statistics", Type : 3,},
+      {Name : "_uuid", Type : 0,},
+    ],
+  },
+
+  StatsDConfig: {
+    # Name of the host where statsD server is running.
+    Host : "127.0.0.1",
+    # port to connect to statsd
+    Port : 8125,
+    # interval between two poll cycles in seconds, by default its 1s
+    PollInterval : 1,
+    # Prefix to add into the values.
+    Prefix : "OVS",
+    # Sample rate value in %. for 100% give it as 1, for 10%, its 0.1
+    SampleRate : 1,
+  },
+
+}

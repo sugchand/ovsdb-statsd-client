@@ -1,0 +1,11 @@
+github.com/cactus/go-statsd-client v1.0.1 h1:R58kYEe8CS4Dg7zNgGi8J0nFhYIGaBvIC7SHJ1l08is=
+github.com/cactus/go-statsd-client v3.2.1+incompatible h1:hSd8ARQzCrnKQUWKdOBbwhU1nGR/al1oiT1AeBzoaTY=
+github.com/cactus/go-statsd-client/statsd v0.0.0-20200623234511-94959e3146b2 h1:GgJnJEJYymy/lx+1zXOO2TvGPRQJJ9vz4onxnA9gF3k=
+github.com/cactus/go-statsd-client/statsd v0.0.0-20200623234511-94959e3146b2/go.mod h1:l/bIBLeOl9eX+wxJAzxS4TveKRtAqlyDpHjhkfO0MEI=
+github.com/digitalocean/go-openvswitch v0.0.0-20191122155805-8ce3b4218729 h1:Gb7f5ZY+a5LLlk0NzwqxllkVro0goc4ACEA9y1oHzik=
+github.com/digitalocean/go-openvswitch v0.0.0-20191122155805-8ce3b4218729/go.mod h1:MpzfscrezUxa94/T4sy2tDaxB+hQ6w0EmRBPv+xHWEs=
+github.com/jessevdk/go-flags v1.4.0 h1:4IU2WS7AumrZ/40jfhf4QVDMsQwqA7VEHozFRrGARJA=
+github.com/jessevdk/go-flags v1.4.0/go.mod h1:4FA24M0QyGHXBuZZK/XkWh8h0e1EYbRYJSGM75WSRxI=
+gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
+gopkg.in/yaml.v2 v2.3.0 h1:clyUAQHOM3G0M3f5vQj7LuJrETvjVot3Z5el9nffUtU=
+gopkg.in/yaml.v2 v2.3.0/go.mod h1:hI93XBmqTisBFMUTm0b8Fm+jr3Dg1NNxqwp+5A1VGuI=
