@@ -116,5 +116,6 @@ func CreateNewOVSDBReader(conf *config.OVSDBConfig)*OVSDBReader {
 		}
 		reader.cols = append(reader.cols, col)
 	}
+	log.Printf("Initialized a new OVSDB reader with parameters %+v", *reader)
 	return reader
 }

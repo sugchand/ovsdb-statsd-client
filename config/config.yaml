@@ -14,11 +14,10 @@
     # Columns in the DB that are interested in
     # Name : Name of the row
     # Type : Type of row
-    # 0 : undefined
+    # 0 : Stat Name/Tag
     # 1 : Counter
     # 2 : Gauge
     # 3 : Timer
-    # XXX : Timer is only supported for now.
     Columns : [
       {Name : "statistics", Type : 3,},
       {Name : "_uuid", Type : 0,},
@@ -30,8 +29,8 @@
     Host : "127.0.0.1",
     # port to connect to statsd
     Port : 8125,
-    # interval between two poll cycles in seconds, by default its 1s
-    PollInterval : 1,
+    # interval between two flush cycles in seconds,the stats are polled in every second
+    FlushInterval : 5,
     # Prefix to add into the values.
     Prefix : "OVS",
     # Sample rate value in %. for 100% give it as 1, for 10%, its 0.1

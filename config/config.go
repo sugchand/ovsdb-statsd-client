@@ -16,20 +16,28 @@ import (
 
 type ReportValueType uint16
 const (
-	// 0 : undefined
+	// 0 : Stat Name/Tag
     // 1 : Counter
     // 2 : Gauge
     // 3 : Timer
-	Undefined ReportValueType = iota
+	TagName ReportValueType = iota
 	Counter
 	Gauge
 	Timer
 )
 
+const (
+	DEFAULT_STATSD_SERVER_IP = "127.0.0.1"
+	DEFAULT_STATSD_SERVER_PORT = 8125
+	DEFAULT_STATSD_FLUSH_INTERVAL = 5 // in seconds
+	DEFAULT_STATSD_POLL_INTERVAL = 1 // in seconds
+	DEFAULT_STATSD_PREFIX = "OVS"
+	DEFAULT_STATSD_SAMPLE_RATE = 1
+)
 type StatsDConfig struct {
 	Host string `yaml:"Host"`
 	Port uint16 `yaml:"Port"`
-	PollInterval uint16 `yaml:"PollInterval"`
+	FlushInterval uint16 `yaml:"FlushInterval"`
 	Prefix string `yaml:2Prefix"`
 	SampleRate uint16 `yaml:"SampleRate"`
 }

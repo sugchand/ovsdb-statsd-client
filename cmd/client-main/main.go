@@ -11,6 +11,7 @@ import (
 	flags "github.com/jessevdk/go-flags"
 	"ovsdb-statsd-client/config"
 	"ovsdb-statsd-client/internal/ovsdb-reader"
+	"ovsdb-statsd-client/internal/statsD-writer"
 	"ovsdb-statsd-client/pkg/errors"
 )
 
@@ -138,7 +139,12 @@ func ovsDBReader() {
 
 }
 
- func main() {
+func statsDWriter() {
+	writer:= statsdwriter.CreateStatsDWriter(&config.InitConfig.StatsDConf)
+	writer.Connect()
+}
+
+func main() {
 
  	// command line flags
  	var opts struct {
@@ -165,6 +171,6 @@ func ovsDBReader() {
 		return
 	}
 	ovsDBReader()
-
+	statsDWriter()
  }
 
