@@ -6,7 +6,6 @@ package statsdwriter
 
 import (
 	"time"
-	"fmt"
 	"math"
 	"log"
 	"strconv"
