@@ -6,7 +6,8 @@ package statsdwriter
 
 import (
 	"time"
-	//"context"
+	"fmt"
+	"math"
 	"log"
 	"strconv"
 	"reflect"
@@ -67,11 +68,12 @@ func (writer *SWriter)getRowName(row *ovsdbreader.ReportRow) string {
 
 func (writer *SWriter)isValidColData(data interface{}) bool{
 	switch v:= reflect.ValueOf(data); v.Kind() {
-		case reflect.Map, reflect.String, reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, 
-		   reflect.Uint,reflect.Uint8,reflect.Uint16,reflect.Uint32,reflect.Uint64, reflect.Int64:
+		case reflect.Map, reflect.Slice, reflect.String, reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32,
+		   reflect.Uint,reflect.Uint8,reflect.Uint16,reflect.Uint32,reflect.Uint64, reflect.Int64, reflect.Float32,
+		   reflect.Float64, reflect.Bool:
 			return true
 		default:
-			log.Printf("Invalid column type %+v", v.Kind())
+			log.Printf("Invalid column type %+v for data %+v", v.Kind(), data)
 			return false
 	}
 }
@@ -89,7 +91,26 @@ func (writer *SWriter)stringValue(data interface{}) (string, bool) {
 	}
 }
 
-func (writer *SWriter)numericValue(data interface{}) (int64, bool) {
+func (writer *SWriter)floatValue(data interface{}) (float64, bool) {
+	switch v:= reflect.ValueOf(data); v.Kind() {
+	case reflect.Float32:
+		res, ok := data.(float32)
+		if !ok {
+			return 0, false
+		}
+		return float64(res), true
+	case reflect.Float64:
+		res, ok := data.(float64)
+		if !ok {
+			return 0, false
+		}
+		return res, true
+	default:
+		return 0, false
+	}
+}
+
+func (writer *SWriter)intValue(data interface{}) (int64, bool) {
 	switch v:= reflect.ValueOf(data); v.Kind() {
 	case reflect.Int:
 		res, ok := data.(int)
@@ -151,19 +172,21 @@ func (writer *SWriter)numericValue(data interface{}) (int64, bool) {
 			return 0 , false
 		}
 		return int64(res), true
+	case reflect.Bool:
+		var resData int64
+		res, ok := data.(bool)
+		if !ok {
+			return 0, false
+		}
+		if res {
+			resData = 1
+		}
+		return resData, true
 	default:
 		return 0, false
 	}
 }
 
-func (writer *SWriter)ColDataIsMap(data interface{}) bool{
-	switch v:= reflect.ValueOf(data); v.Kind() {
-	case reflect.Map:
-		return true
-	default:
-		return false
-	}
-}
 
 func (writer *SWriter)writeCol(name string, value int64, rType config.ReportValueType) {
 	switch rType {
@@ -178,34 +201,76 @@ func (writer *SWriter)writeCol(name string, value int64, rType config.ReportValu
 	}
 
 }
+
+func (writer *SWriter)WriteColData(name string, data interface{}, rType config.ReportValueType) string{
+
+	switch v:= reflect.ValueOf(data); v.Kind() {
+	case reflect.Map:
+		colMap, _ := data.(map[string]interface{})
+		for key, val := range colMap {
+			statname, ok := writer.stringValue(key)
+			if !ok {
+				// invalid key in map.
+				continue
+			}
+			statname = name +"-" + statname
+			writer.WriteColData(statname, val, rType)
+		}
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
+		 reflect.Uint,reflect.Uint8,reflect.Uint16,reflect.Uint32,reflect.Uint64:
+		 dataVal, ok := writer.intValue(data)
+		 if !ok {
+			 return ""
+		 }
+		 writer.writeCol(name, dataVal, rType)
+	case reflect.Float32, reflect.Float64:
+		dataVal, ok := writer.floatValue(data)
+		if !ok {
+			return ""
+		}
+		// XXX : statsd cannot support float values so convert it to nearest integer.
+		writer.writeCol(name, int64(math.Round(dataVal)), rType)
+	case reflect.Bool:
+		dataVal, ok := writer.intValue(data)
+		if !ok {
+			return ""
+		}
+		writer.writeCol(name, int64(dataVal), rType)
+	case reflect.Slice:
+		dataSlice, _ := data.([]interface{})
+		var newName string
+		for _, val := range dataSlice {
+			statname := name
+			if newName != "" {
+				statname = newName
+			}
+			newName = writer.WriteColData(statname, val, rType)
+		}
+	case reflect.String:
+		// a string value can be a tag or name, skip it.
+		if rType == config.TagName {
+			return ""
+		}
+		dataStr, ok := data.(string)
+		if !ok {
+			return ""
+		}
+		if dataStr == "map" {
+			return ""
+		}
+		return name + "-" + dataStr
+	default:
+		log.Printf("Invalid data type %+v for data %+v", v.Kind(), data)
+		return ""
+	}
+	return ""
+}
 func (writer *SWriter)processCol(name string, col *ovsdbreader.ReportCol) {
-	statName := name + col.ColName
+	statName :=  col.ColName + "-" + name
 	if writer.isValidColData(col.Data) == false {
 		return
 	}
-	if writer.ColDataIsMap(col.Data) == true {
-		// process a map
-		colMap, _ := col.Data.(map[interface{}]interface{})
-		for key, val := range colMap {
-			name, ok := writer.stringValue(key)
-			if !ok {
-				continue
-			}
-			name = statName + name
-			dataVal, ok := writer.numericValue(val)
-			if !ok {
-				continue
-			}
-			writer.writeCol(name, dataVal, col.ReportType)
-
-		}
-
-	}
-	dataVal, ok := writer.numericValue(col.Data)
-	if !ok {
-		return
-	}
-	writer.writeCol(statName, dataVal, col.ReportType)
+	writer.WriteColData(statName, col.Data, col.ReportType)
 }
 
 func (writer *SWriter)processRow(row *ovsdbreader.ReportRow) {

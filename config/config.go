@@ -47,12 +47,16 @@ type DBColumns struct {
 	Type ReportValueType `yaml:"Type"`
 }
 
+type Table struct {
+	Name string `yaml:"Name"`
+	Cols []DBColumns `yaml:"Columns"`
+}
+
 type OVSDBConfig struct {
 	Network string `yaml:"Network"`
 	Address string `yaml:"Address"`
 	DB string `yaml:"DB"`
-	Table string `yaml:"Table"`
-	Cols []DBColumns `yaml:"Columns"`
+	Tables []Table `yaml:"Table"`
 }
 
 // StartupConfig : YAML configuration struct for the agent

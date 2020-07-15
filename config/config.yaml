@@ -10,17 +10,28 @@
     # DB name to read the data from
     DB : "Open_vSwitch",
     # OVSDB table to read the data from.
-    Table : "Interface",
-    # Columns in the DB that are interested in
-    # Name : Name of the row
-    # Type : Type of row
-    # 0 : Stat Name/Tag
-    # 1 : Counter
-    # 2 : Gauge
-    # 3 : Timer
-    Columns : [
-      {Name : "statistics", Type : 3,},
-      {Name : "name", Type : 0,},
+    Table : [
+      {
+        Name : "Interface",
+        # Columns in the DB that are interested in
+        # Name : Name of the row
+        # Type : Type of row
+        # 0 : Stat Name/Tag
+        # 1 : Counter
+        # 2 : Gauge
+        # 3 : Timer
+        Columns : [
+          {Name : "statistics", Type : 2,},
+          {Name : "name", Type : 0,},
+        ],
+      },
+      {
+        Name : "Bridge",
+        Columns : [
+          {Name : "stp_enable", Type : 2,},
+          {Name : "name", Type : 0,},
+        ],
+      },
     ],
   },
 

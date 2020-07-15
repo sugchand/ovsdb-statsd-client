@@ -18,6 +18,7 @@ import (
 
 func run(reader *ovsdbreader.OVSDBReader, writer *statsdwriter.SWriter) {
 	report := reader.ReadOVSDB()
+	//reader.DisplayReport()
 	writer.Write(report)
 }
 
