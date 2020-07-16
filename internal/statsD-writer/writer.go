@@ -257,7 +257,7 @@ func (writer *SWriter)WriteColData(name string, data interface{}, rType config.R
 		if dataStr == "map" {
 			return ""
 		}
-		return name + "-" + dataStr
+		return name + "." + dataStr
 	default:
 		log.Printf("Invalid data type %+v for data %+v", v.Kind(), data)
 		return ""
@@ -265,7 +265,7 @@ func (writer *SWriter)WriteColData(name string, data interface{}, rType config.R
 	return ""
 }
 func (writer *SWriter)processCol(name string, col *ovsdbreader.ReportCol) {
-	statName :=  col.ColName + "-" + name
+	statName :=  col.ColName + "." + name
 	if writer.isValidColData(col.Data) == false {
 		return
 	}
